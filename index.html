@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Research Framework · Gate, Canvas, Lesson</title>
+<style>
+:root{
+  --teal:#4495A2; --teal-dark:#2E6B77; --teal-tint:#E6F1F3;
+  --green:#7CA655; --green-dark:#4F7A30; --green-tint:#EDF4E6;
+  --yellow:#F9D448; --yellow-tint:#FDF4CC;
+  --ink:#1F2A2E; --muted:#5B6B70; --line:#D5DEE0; --bg:#F7FAFA; --card:#FFFFFF;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+header{background:var(--teal);color:#fff;padding:22px 16px 0}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+header .wrap{padding:0}
+h1{margin:0;font-size:26px;letter-spacing:.2px}
+.sub{margin:4px 0 16px;font-size:16px;color:#fff;opacity:.95}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:transparent;color:#fff;border:0;padding:10px 16px;font-size:15px;font-weight:600;cursor:pointer;border-radius:8px 8px 0 0}
+nav button[aria-selected="true"]{background:var(--bg);color:var(--teal-dark)}
+nav button:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--yellow);outline-offset:1px}
+main{padding:20px 0 60px}
+section[hidden]{display:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin:0 0 18px}
+.card h2{margin:0 0 4px;font-size:20px;color:var(--teal-dark)}
+.step{display:inline-block;background:var(--yellow);color:var(--ink);font-weight:700;font-size:13px;padding:2px 10px;border-radius:999px;margin-bottom:8px}
+.hint{color:var(--muted);font-size:14px;margin:0 0 12px}
+label.l{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+input[type=text],textarea,select{width:100%;padding:9px 10px;border:1px solid #B9C7CA;border-radius:8px;font:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:84px;resize:vertical}
+.row{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:820px){.row.c2{grid-template-columns:1fr 1fr}.row.c3{grid-template-columns:1fr 1fr 1fr}.row.c4{grid-template-columns:1fr 1fr 1fr 1fr}}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+button.b{background:var(--teal-dark);color:#fff;border:0;padding:9px 14px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer}
+button.b.alt{background:#fff;color:var(--teal-dark);border:1px solid var(--teal)}
+button.b.warn{background:#fff;color:var(--ink);border:1px solid #B9C7CA}
+.test{border:1px solid var(--line);border-radius:10px;padding:12px;margin:0 0 12px}
+.test legend{font-weight:700;padding:0 6px}
+.test .ko{font-size:12px;background:var(--yellow-tint);border:1px solid var(--yellow);border-radius:999px;padding:1px 8px;margin-left:6px;font-weight:600}
+.opt{display:flex;gap:8px;align-items:flex-start;padding:5px 0;font-size:15px;cursor:pointer}
+.opt input{margin-top:4px}
+.result{border-radius:10px;padding:12px 14px;font-weight:700}
+.result small{display:block;font-weight:400;margin-top:2px}
+.result.go{background:var(--green-tint);border:2px solid var(--green);color:#2E4A19}
+.result.revisit{background:var(--yellow-tint);border:2px solid var(--yellow);color:var(--ink)}
+.result.stop{background:#EEF1F2;border:2px solid #7A8A8F;color:var(--ink)}
+.result.open{background:var(--teal-tint);border:2px solid var(--teal);color:var(--teal-dark)}
+.lens{border-left:6px solid var(--teal)}
+.lens .unit{display:inline-block;background:var(--teal-tint);color:var(--teal-dark);font-size:13px;font-weight:600;border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
+.strength{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.strength button{border:1px solid #B9C7CA;background:#fff;color:var(--ink);padding:5px 12px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer}
+.strength button[aria-pressed="true"].s1{background:var(--yellow);border-color:var(--yellow)}
+.strength button[aria-pressed="true"].s2{background:var(--green-tint);border-color:var(--green)}
+.strength button[aria-pressed="true"].s3{background:var(--green);border-color:var(--green);color:var(--ink)}
+.strength button[aria-pressed="true"].s0{background:var(--teal-tint);border-color:var(--teal)}
+.meter{height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.meter>div{height:100%;background:var(--green);width:0}
+.plan li{margin:4px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+th{background:var(--teal-tint);color:var(--teal-dark)}
+td.h0{background:#fff}td.h1{background:var(--yellow-tint)}td.h2{background:var(--green-tint)}td.h3{background:var(--green)}
+.pill{display:inline-block;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700}
+.pill.go{background:var(--green);color:var(--ink)}.pill.revisit{background:var(--yellow);color:var(--ink)}.pill.stop{background:#7A8A8F;color:#fff}.pill.open{background:var(--teal-tint);color:var(--teal-dark)}
+.empty{text-align:center;padding:40px 16px}
+.status{font-size:13px;color:var(--muted)}
+.layer{display:grid;gap:10px;grid-template-columns:1fr}
+@media(min-width:820px){.layer{grid-template-columns:repeat(3,1fr)}}
+.layer div{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff}
+.layer b{color:var(--teal-dark)}
+@media print{
+  header nav,.btns,.strength button:not([aria-pressed="true"]),#subjectbar{display:none!important}
+  section[hidden]{display:none!important}
+  body{background:#fff}.card{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Research Framework</h1>
+    <p class="sub">Working title · Gate, then Canvas, then Lesson</p>
+    <nav role="tablist" aria-label="Sections">
+      <button role="tab" aria-selected="true" data-tab="work">Workbench</button>
+      <button role="tab" aria-selected="false" data-tab="library">Library</button>
+      <button role="tab" aria-selected="false" data-tab="about">About the framework</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="tab-work">
+  <div class="card" id="subjectbar">
+    <label class="l" for="subjectSelect" style="margin-top:0">Subject</label>
+    <div class="row c2" style="align-items:end">
+      <select id="subjectSelect" aria-label="Choose a subject"></select>
+      <div class="btns" style="margin:0">
+        <button class="b" id="newBtn">New subject</button>
+        <button class="b alt" id="exampleBtn">Load example</button>
+        <button class="b alt" id="importBtn">Import JSON</button>
+        <input type="file" id="importFile" accept="application/json" hidden>
+      </div>
+    </div>
+    <p class="status" id="saveStatus">Work saves automatically in this browser only. Use Export to keep or share a copy.</p>
+  </div>
+  <div id="workspace"></div>
+</section>
+
+<section id="tab-library" hidden>
+  <div class="card">
+    <h2>Library</h2>
+    <p class="hint">Every subject you have researched, side by side. Over time this shows which lens most often carries the ingenuity.</p>
+    <div id="libraryBody"></div>
+  </div>
+</section>
+
+<section id="tab-about" hidden>
+  <div class="card">
+    <h2>How the model works</h2>
+    <p class="hint">The series studies human ingenuity: businesses and real-world wonders that worked, and worked well, without AI.</p>
+    <div class="layer">
+      <div><b>1. The Gate (wrapper)</b><br>Five tests decide whether a subject is worth 4 to 8 weeks of research. Ingenuity and Evidence are knockouts: a weak score on either stops the subject.</div>
+      <div><b>2. The Canvas (the framework)</b><br>Four lenses, each asked the same three questions: Constraint, Leap, Consequence. Twelve cells make one comparable page per subject.</div>
+      <div><b>3. The Lesson (summary)</b><br>An honest ledger of who gained and who paid, where the lenses collide, and one transferable principle for a young person.</div>
+    </div>
+    <h2 style="margin-top:18px">Four lenses, defined by what they measure</h2>
+    <table>
+      <tr><th>Lens</th><th>Unit of analysis</th><th>Owns</th></tr>
+      <tr><td>Engineering &amp; Science</td><td>Things and physics</td><td>How it works, the principle underneath, how it fails</td></tr>
+      <tr><td>Economy</td><td>Money and value flows</td><td>Unit economics, who gains and pays, ripple effects, labour as a share of cost</td></tr>
+      <tr><td>People</td><td>Humans and skills</td><td>Headcount, the skill pyramid or matrix, who is affected</td></tr>
+      <tr><td>Environment</td><td>Nature and resources</td><td>Resources in, waste out, what is deferred</td></tr>
+    </table>
+    <p class="hint" style="margin-top:12px">Overlap rule: wages as a share of cost is money, so it lives in Economy. Headcount and skills are humans, so they live in People.</p>
+    <h2 style="margin-top:18px">Evidence standard</h2>
+    <p>Anchor every key claim in a primary source or two independent credible ones. Make every number traceable. Steel-man the strongest critic. Use explainers for orientation only, never as the sole source.</p>
+    <h2 style="margin-top:18px">Series rhythm</h2>
+    <p>One subject, 4 to 8 weeks of research, one flagship episode, plus one or two deep-dive episodes on the strongest lenses.</p>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function(){
+"use strict";
+var KEY="research-framework-v1";
+var CONFIG={goAt:8,revisitAt:6,knockouts:["ing","evi"],knockoutMin:1};
+var STR=["Unrated","Thin","Solid","Strong"];
+
+var LENSES=[
+ {key:"eng",name:"Engineering & Science",unit:"Things and physics",
+  c:"What physical or technical limit made this impossible, slow or costly before?",
+  l:"What was the technical or scientific leap, and what principle sits underneath it?",
+  q:"What did it make possible, what are its limits, and what could make it fail?",
+  extras:[{k:"principle",label:"Core principle in one line"}]},
+ {key:"eco",name:"Economy",unit:"Money and value flows",
+  c:"What made this commercially or financially unworkable before? Who could not afford it?",
+  l:"What business-model, financing or pricing move unlocked it? Where is value created versus captured?",
+  q:"Who gained, who paid, how do the unit economics look, and what ripple effects reached suppliers, regions or industries?",
+  extras:[{k:"laborShare",label:"Labour as % of cost (optional)"}]},
+ {key:"ppl",name:"People",unit:"Humans and skills",
+  c:"What human limit stood in the way: skills, scale of labour, safety, knowledge?",
+  l:"What organisational or human leap solved it: training, structure, recruitment, culture?",
+  q:"Who works here and who is affected? What was the human benefit and the human cost?",
+  extras:[{k:"headcount",label:"Headcount (peak and current)"},{k:"pyrTop",label:"Skill pyramid: top tier"},{k:"pyrMid",label:"Skill pyramid: middle tier"},{k:"pyrBase",label:"Skill pyramid: base tier"}]},
+ {key:"env",name:"Environment",unit:"Nature and resources",
+  c:"What did nature, geography or resources impose?",
+  l:"How did they work with, or around, the natural system?",
+  q:"Resources in, waste out, what improved, what strained, and what is deferred to the future?",
+  extras:[{k:"dependency",label:"Biggest resource dependency"}]}
+];
+
+var TESTS=[
+ {k:"ing",title:"Ingenuity",ko:true,q:"Is there a genuine human leap here (technical, commercial, creative or organisational) that we can name?",
+  o:["None we can name","A modest or incremental improvement","A clear leap we can name in one sentence"]},
+ {k:"evi",title:"Evidence",ko:true,q:"Can we reach primary sources: filings, archives, official data, interviews or the site itself?",
+  o:["Mostly secondary summaries","Some primary material","Rich primary sources within reach"]},
+ {k:"lens",title:"Lens depth",q:"How many of the four lenses have substantive material?",
+  o:["One or two","Three","All four"]},
+ {k:"fresh",title:"Fresh angle",q:"What do we add beyond the standard telling?",
+  o:["Nothing yet","Some new material","A distinct angle we can state in one line"]},
+ {k:"aud",title:"Audience pull",q:"Does a CXO get value, and does a young person get something to apply?",
+  o:["Neither is clear","One of the two","Both, clearly"]}
+];
+
+function uid(){return "s"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function blank(){
+  var lens={};
+  LENSES.forEach(function(L){
+    var o={c:"",l:"",q:"",num:"",src:"",strength:0};
+    L.extras.forEach(function(e){o[e.k]="";});
+    lens[L.key]=o;
+  });
+  return {id:uid(),name:"",type:"business",desc:"",spine:"",angle:"",
+    gate:{ing:null,evi:null,lens:null,fresh:null,aud:null},
+    lens:lens,
+    ledger:{gained:"",paid:"",deferred:"",collisions:""},
+    lesson:"",updated:Date.now()};
+}
+function example(){
+  var s=blank();
+  s.name="Panama Canal (illustrative example)";
+  s.type="wonder";
+  s.desc="Illustrative only. Claims and figures are unverified and for demonstration.";
+  s.spine="What did it take to lift ships over a continental divide, and who bore the cost?";
+  s.angle="Treat the disease campaign and the workforce structure as engineering problems, not background.";
+  s.gate={ing:2,evi:2,lens:2,fresh:1,aud:2};
+  s.lens.eng.c="A mountain divide between two oceans.";
+  s.lens.eng.l="Lift ships over it with locks and a lake instead of a sea-level cut.";
+  s.lens.eng.q="Lock size set ship design for a century.";
+  s.lens.eng.strength=3;
+  s.lens.eco.c="The Cape Horn detour; capital beyond private means.";
+  s.lens.eco.l="A tolled, state-backed strategic asset.";
+  s.lens.eco.q="Trade routes and port economics reshaped.";
+  s.lens.eco.strength=2;
+  s.lens.ppl.c="Disease and an enormous labour requirement.";
+  s.lens.ppl.l="A sanitation campaign plus mass recruitment.";
+  s.lens.ppl.q="A heavy human toll and a stratified workforce.";
+  s.lens.ppl.strength=3;
+  s.lens.env.c="Rainforest, heavy rain, the Chagres river.";
+  s.lens.env.l="Dam the river and use water as the lift.";
+  s.lens.env.q="Flooded forest; dependence on rainfall.";
+  s.lens.env.strength=2;
+  s.ledger={gained:"Shipping, trade and the countries that use or control the route.",paid:"Workers and communities (to be researched).",deferred:"Water dependence in a changing climate.",collisions:"Engineering success against human cost."};
+  s.lesson="Reframe the problem before you try to solve it faster.";
+  return s;
+}
+
+function load(){
+  try{var r=localStorage.getItem(KEY);if(r){var s=JSON.parse(r);if(s&&s.subjects)return s;}}catch(e){}
+  return {subjects:{},current:null};
+}
+var store=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
+function cur(){return store.current?store.subjects[store.current]:null;}
+function getPath(o,p){return p.split(".").reduce(function(a,k){return a==null?a:a[k];},o);}
+function setPath(o,p,v){var ks=p.split("."),a=o;for(var i=0;i<ks.length-1;i++){a=a[ks[i]];}a[ks[ks.length-1]]=v;}
+
+function gateResult(g){
+  var keys=TESTS.map(function(t){return t.k;});
+  var missing=keys.some(function(k){return g[k]===null||g[k]===undefined;});
+  if(missing)return {state:"open",label:"Score all five tests",note:"The gate result appears once every test is scored."};
+  var total=keys.reduce(function(a,k){return a+g[k];},0);
+  var ko=CONFIG.knockouts.filter(function(k){return g[k]<CONFIG.knockoutMin;});
+  if(ko.length){
+    var names=ko.map(function(k){return TESTS.filter(function(t){return t.k===k;})[0].title;}).join(" and ");
+    return {state:"stop",label:"Stop ("+total+"/10)",note:names+" scored too low. A subject without these is not an ingenuity story we can evidence."};
+  }
+  if(total>=CONFIG.goAt)return {state:"go",label:"Go ("+total+"/10)",note:"Worth the research window. Write down the angle before you start."};
+  if(total>=CONFIG.revisitAt)return {state:"revisit",label:"Revisit ("+total+"/10)",note:"Close, but sharpen the fresh angle or the evidence before committing."};
+  return {state:"stop",label:"Stop ("+total+"/10)",note:"Park this subject. Come back if new material or a sharper angle appears."};
+}
+
+function completeness(s){
+  var total=0,done=0;
+  function chk(v){total++;if(v!==null&&v!==undefined&&String(v).trim()!=="")done++;}
+  chk(s.name);chk(s.spine);chk(s.angle);
+  TESTS.forEach(function(t){chk(s.gate[t.k]);});
+  LENSES.forEach(function(L){
+    chk(s.lens[L.key].c);chk(s.lens[L.key].l);chk(s.lens[L.key].q);
+    chk(s.lens[L.key].strength?"x":"");
+  });
+  chk(s.ledger.gained);chk(s.ledger.paid);chk(s.ledger.deferred);chk(s.ledger.collisions);chk(s.lesson);
+  return Math.round(done/total*100);
+}
+
+function episodePlan(s){
+  var items=["<li><b>Flagship:</b> "+esc(s.name||"This subject")+" through the spine"+(s.spine?": <i>"+esc(s.spine)+"</i>":"")+".</li>"];
+  var strong=LENSES.filter(function(L){return s.lens[L.key].strength===3;});
+  strong.forEach(function(L){items.push("<li><b>Deep dive:</b> the "+esc(L.name)+" lens on its own.</li>");});
+  if(!strong.length)items.push("<li>Rate at least one lens Strong to plan a deep-dive episode.</li>");
+  return "<ul class='plan'>"+items.join("")+"</ul><p class='hint'>Research window: 4 to 8 weeks.</p>";
+}
+
+function renderSelect(){
+  var sel=document.getElementById("subjectSelect");
+  var ids=Object.keys(store.subjects).sort(function(a,b){return store.subjects[b].updated-store.subjects[a].updated;});
+  if(!ids.length){sel.innerHTML="<option value=''>No subjects yet</option>";sel.disabled=true;return;}
+  sel.disabled=false;
+  sel.innerHTML=ids.map(function(id){var s=store.subjects[id];return "<option value='"+id+"'"+(id===store.current?" selected":"")+">"+esc(s.name||"Untitled subject")+"</option>";}).join("");
+}
+
+function renderWorkspace(){
+  var s=cur(),w=document.getElementById("workspace");
+  if(!s){
+    w.innerHTML="<div class='card empty'><h2>Start with a subject</h2><p class='hint'>Create a new subject, or load the example to see how the gate, canvas and lesson fit together.</p></div>";
+    return;
+  }
+  var h="";
+  h+="<div class='card'><span class='step'>Subject</span>"+
+    "<div class='row c2'><div><label class='l' for='f-name'>Name</label><input type='text' id='f-name' data-path='name' value='"+esc(s.name)+"'></div>"+
+    "<div><label class='l' for='f-type'>Type</label><select id='f-type' data-path='type'><option value='business'"+(s.type==="business"?" selected":"")+">Business</option><option value='wonder'"+(s.type==="wonder"?" selected":"")+">Real-life wonder</option></select></div></div>"+
+    "<label class='l' for='f-desc'>One-line description</label><input type='text' id='f-desc' data-path='desc' value='"+esc(s.desc)+"'>"+
+    "<label class='l' for='f-spine'>The spine: the one question this research answers</label><input type='text' id='f-spine' data-path='spine' value='"+esc(s.spine)+"' placeholder='For example: What did they figure out that everyone else missed?'></div>";
+
+  h+="<div class='card'><span class='step'>Step 1 · The Gate</span><h2>Is this worth the research?</h2><p class='hint'>Score each test from 0 to 2. Tests marked as knockouts stop the subject if scored too low.</p>";
+  TESTS.forEach(function(t){
+    h+="<fieldset class='test'><legend>"+esc(t.title)+(t.ko?"<span class='ko'>knockout</span>":"")+"</legend><p class='hint' style='margin-bottom:6px'>"+esc(t.q)+"</p>";
+    t.o.forEach(function(o,i){
+      h+="<label class='opt'><input type='radio' name='g-"+t.k+"' data-gate='"+t.k+"' value='"+i+"'"+(s.gate[t.k]===i?" checked":"")+"><span><b>"+i+"</b> · "+esc(o)+"</span></label>";
+    });
+    h+="</fieldset>";
+  });
+  h+="<label class='l' for='f-angle'>Our angle: what we add beyond the standard telling</label><textarea id='f-angle' data-path='angle'>"+esc(s.angle)+"</textarea>";
+  h+="<div id='gateResult' class='result open' style='margin-top:12px' aria-live='polite'></div></div>";
+
+  h+="<div class='card' style='padding-bottom:6px'><span class='step'>Step 2 · The Canvas</span><h2>Four lenses, three questions each</h2><p class='hint'>For every lens: the Constraint (the limit), the Leap (the ingenious move), the Consequence (what it delivered and cost).</p></div>";
+  LENSES.forEach(function(L){
+    var d=s.lens[L.key];
+    h+="<div class='card lens'><h2>"+esc(L.name)+"<span class='unit'>"+esc(L.unit)+"</span></h2>";
+    h+="<div class='row c3'>"+
+      "<div><label class='l' for='"+L.key+"-c'>Constraint</label><textarea id='"+L.key+"-c' data-path='lens."+L.key+".c' placeholder='"+esc(L.c)+"'>"+esc(d.c)+"</textarea></div>"+
+      "<div><label class='l' for='"+L.key+"-l'>Leap</label><textarea id='"+L.key+"-l' data-path='lens."+L.key+".l' placeholder='"+esc(L.l)+"'>"+esc(d.l)+"</textarea></div>"+
+      "<div><label class='l' for='"+L.key+"-q'>Consequence</label><textarea id='"+L.key+"-q' data-path='lens."+L.key+".q' placeholder='"+esc(L.q)+"'>"+esc(d.q)+"</textarea></div></div>";
+    h+="<div class='row c2'><div><label class='l' for='"+L.key+"-num'>The number that matters</label><input type='text' id='"+L.key+"-num' data-path='lens."+L.key+".num' value='"+esc(d.num)+"' placeholder='One figure, with its unit and year'></div>"+
+      "<div><label class='l' for='"+L.key+"-src'>Primary sources</label><input type='text' id='"+L.key+"-src' data-path='lens."+L.key+".src' value='"+esc(d.src)+"' placeholder='Where this evidence comes from'></div></div>";
+    h+="<div class='row "+(L.extras.length>2?"c4":"c2")+"'>";
+    L.extras.forEach(function(e){
+      h+="<div><label class='l' for='"+L.key+"-"+e.k+"'>"+esc(e.label)+"</label><input type='text' id='"+L.key+"-"+e.k+"' data-path='lens."+L.key+"."+e.k+"' value='"+esc(d[e.k])+"'></div>";
+    });
+    h+="</div>";
+    h+="<label class='l'>How strong is this lens for the subject?</label><div class='strength' data-lens='"+L.key+"' role='group' aria-label='Lens strength'>";
+    for(var i=0;i<4;i++){h+="<button type='button' class='s"+i+"' data-s='"+i+"' aria-pressed='"+(d.strength===i)+"'>"+STR[i]+"</button>";}
+    h+="</div></div>";
+  });
+
+  h+="<div class='card'><span class='step'>Step 3 · The Lesson</span><h2>The summary</h2>"+
+    "<div class='row c3'>"+
+    "<div><label class='l' for='lg-gained'>Who gained</label><textarea id='lg-gained' data-path='ledger.gained'>"+esc(s.ledger.gained)+"</textarea></div>"+
+    "<div><label class='l' for='lg-paid'>Who paid</label><textarea id='lg-paid' data-path='ledger.paid'>"+esc(s.ledger.paid)+"</textarea></div>"+
+    "<div><label class='l' for='lg-def'>What cost was deferred</label><textarea id='lg-def' data-path='ledger.deferred'>"+esc(s.ledger.deferred)+"</textarea></div></div>"+
+    "<label class='l' for='lg-col'>Where the lenses collide</label><textarea id='lg-col' data-path='ledger.collisions' placeholder='For example: cheaper for the customer, harder on the worker'>"+esc(s.ledger.collisions)+"</textarea>"+
+    "<label class='l' for='f-lesson'>The transferable principle: one idea a 22-year-old could apply</label><textarea id='f-lesson' data-path='lesson'>"+esc(s.lesson)+"</textarea>"+
+    "<h2 style='margin-top:18px'>Episode plan</h2><div id='plan'></div>"+
+    "<label class='l'>Completeness</label><div class='meter' aria-hidden='true'><div id='meterBar'></div></div><p class='status' id='meterText'></p>"+
+    "<div class='btns'><button class='b' id='copyMd'>Copy as Markdown</button><button class='b alt' id='dlMd'>Download .md</button><button class='b alt' id='dlJson'>Download JSON</button><button class='b alt' id='printBtn'>Print</button><button class='b warn' id='delBtn'>Delete subject</button></div></div>";
+  w.innerHTML=h;
+  updateDerived();
+}
+
+function updateDerived(){
+  var s=cur();if(!s)return;
+  var r=gateResult(s.gate),el=document.getElementById("gateResult");
+  if(el){el.className="result "+r.state;el.innerHTML=esc(r.label)+"<small>"+esc(r.note)+"</small>";}
+  var p=document.getElementById("plan");if(p)p.innerHTML=episodePlan(s);
+  var c=completeness(s),bar=document.getElementById("meterBar"),mt=document.getElementById("meterText");
+  if(bar)bar.style.width=c+"%";
+  if(mt)mt.textContent=c+"% of the framework filled in";
+}
+
+function touch(){
+  var s=cur();if(!s)return;
+  s.updated=Date.now();save();
+  var st=document.getElementById("saveStatus");
+  if(st)st.textContent="Saved in this browser at "+new Date().toLocaleTimeString()+". Use Export to keep or share a copy.";
+}
+
+function toMarkdown(s){
+  var r=gateResult(s.gate),L=[];
+  L.push("# "+(s.name||"Untitled subject"));
+  if(s.desc)L.push("_"+s.desc+"_");
+  L.push("","**Type:** "+(s.type==="wonder"?"Real-life wonder":"Business"));
+  if(s.spine)L.push("**Spine:** "+s.spine);
+  L.push("","## Gate","**Result:** "+r.label+". "+r.note,"");
+  TESTS.forEach(function(t){var v=s.gate[t.k];L.push("- "+t.title+": "+(v===null?"not scored":v+" · "+t.o[v]));});
+  if(s.angle)L.push("","**Our angle:** "+s.angle);
+  L.push("","## Canvas");
+  LENSES.forEach(function(Ln){
+    var d=s.lens[Ln.key];
+    L.push("","### "+Ln.name+" ("+Ln.unit+") · "+STR[d.strength],
+      "- **Constraint:** "+(d.c||"-"),"- **Leap:** "+(d.l||"-"),"- **Consequence:** "+(d.q||"-"));
+    if(d.num)L.push("- **The number that matters:** "+d.num);
+    if(d.src)L.push("- **Primary sources:** "+d.src);
+    Ln.extras.forEach(function(e){if(d[e.k])L.push("- **"+e.label+":** "+d[e.k]);});
+  });
+  L.push("","## Lesson",
+    "- **Who gained:** "+(s.ledger.gained||"-"),
+    "- **Who paid:** "+(s.ledger.paid||"-"),
+    "- **Deferred cost:** "+(s.ledger.deferred||"-"),
+    "- **Where the lenses collide:** "+(s.ledger.collisions||"-"),
+    "","**Transferable principle:** "+(s.lesson||"-"),"","## Episode plan",
+    "- Flagship: "+(s.name||"This subject"));
+  LENSES.forEach(function(Ln){if(s.lens[Ln.key].strength===3)L.push("- Deep dive: "+Ln.name);});
+  return L.join("\n");
+}
+function download(name,text,type){
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([text],{type:type}));
+  a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+}
+function slug(s){return (s.name||"subject").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"subject";}
+
+function renderLibrary(){
+  var ids=Object.keys(store.subjects).sort(function(a,b){return store.subjects[b].updated-store.subjects[a].updated;});
+  var b=document.getElementById("libraryBody");
+  if(!ids.length){b.innerHTML="<p>No subjects yet.</p>";return;}
+  var h="<div style='overflow-x:auto'><table><tr><th>Subject</th><th>Gate</th>"+LENSES.map(function(L){return "<th>"+esc(L.name)+"</th>";}).join("")+"<th>Filled</th><th></th></tr>";
+  ids.forEach(function(id){
+    var s=store.subjects[id],r=gateResult(s.gate);
+    h+="<tr><td><b>"+esc(s.name||"Untitled subject")+"</b></td><td><span class='pill "+r.state+"'>"+esc(r.label)+"</span></td>";
+    LENSES.forEach(function(L){var v=s.lens[L.key].strength;h+="<td class='h"+v+"'>"+STR[v]+"</td>";});
+    h+="<td>"+completeness(s)+"%</td><td><button class='b alt' data-open='"+id+"'>Open</button></td></tr>";
+  });
+  h+="</table></div>";
+  b.innerHTML=h;
+}
+
+function showTab(t){
+  ["work","library","about"].forEach(function(n){document.getElementById("tab-"+n).hidden=(n!==t);});
+  document.querySelectorAll("nav button").forEach(function(b){b.setAttribute("aria-selected",String(b.dataset.tab===t));});
+  if(t==="library")renderLibrary();
+}
+function openSubject(id){store.current=id;save();renderSelect();renderWorkspace();showTab("work");}
+function addSubject(s){store.subjects[s.id]=s;openSubject(s.id);}
+
+document.addEventListener("input",function(e){
+  var p=e.target.dataset&&e.target.dataset.path,s=cur();
+  if(p&&s){setPath(s,p,e.target.value);touch();updateDerived();if(p==="name")renderSelect();}
+});
+document.addEventListener("change",function(e){
+  var t=e.target,s=cur();
+  if(t.dataset&&t.dataset.gate&&s){s.gate[t.dataset.gate]=parseInt(t.value,10);touch();updateDerived();}
+  if(t.id==="subjectSelect"&&t.value){openSubject(t.value);}
+  if(t.id==="importFile"&&t.files&&t.files[0]){
+    var rd=new FileReader();
+    rd.onload=function(){
+      try{
+        var o=JSON.parse(rd.result);
+        if(!o||!o.lens||!o.gate)throw new Error("bad");
+        var b=blank();
+        Object.keys(b).forEach(function(k){if(k!=="id"&&o[k]!==undefined)b[k]=o[k];});
+        b.updated=Date.now();addSubject(b);
+      }catch(err){alert("That file is not a subject exported from this tool.");}
+      t.value="";
+    };
+    rd.readAsText(t.files[0]);
+  }
+});
+document.addEventListener("click",function(e){
+  var t=e.target,s=cur();
+  if(t.dataset&&t.dataset.tab)showTab(t.dataset.tab);
+  if(t.dataset&&t.dataset.open)openSubject(t.dataset.open);
+  var sb=t.closest&&t.closest(".strength");
+  if(sb&&t.dataset.s!==undefined&&s){
+    var v=parseInt(t.dataset.s,10);s.lens[sb.dataset.lens].strength=v;
+    sb.querySelectorAll("button").forEach(function(b){b.setAttribute("aria-pressed",String(parseInt(b.dataset.s,10)===v));});
+    touch();updateDerived();
+  }
+  if(t.id==="newBtn"){var n=blank();n.name="New subject";addSubject(n);}
+  if(t.id==="exampleBtn"){addSubject(example());}
+  if(t.id==="importBtn"){document.getElementById("importFile").click();}
+  if(s&&t.id==="copyMd"){
+    var md=toMarkdown(s);
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(md).then(function(){t.textContent="Copied";setTimeout(function(){t.textContent="Copy as Markdown";},1500);});}
+    else{download(slug(s)+".md",md,"text/markdown");}
+  }
+  if(s&&t.id==="dlMd")download(slug(s)+".md",toMarkdown(s),"text/markdown");
+  if(s&&t.id==="dlJson")download(slug(s)+".json",JSON.stringify(s,null,2),"application/json");
+  if(t.id==="printBtn")window.print();
+  if(s&&t.id==="delBtn"){
+    if(confirm("Delete this subject from this browser? Export it first if you want a copy.")){
+      delete store.subjects[store.current];
+      var ids=Object.keys(store.subjects);store.current=ids.length?ids[0]:null;
+      save();renderSelect();renderWorkspace();
+    }
+  }
+});
+
+if(!store.current||!store.subjects[store.current]){
+  var ids0=Object.keys(store.subjects);store.current=ids0.length?ids0[0]:null;
+}
+renderSelect();renderWorkspace();
+})();
+</script>
+</body>
+</html>
